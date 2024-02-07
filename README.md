@@ -1,7 +1,7 @@
 # VecDep
 Measuring dependence between random vectors and applications.
 
-R code implementations used for the article "High-dimensional copula-based Wasserstein dependence", including
+R code implementations used for the article "High-dimensional copula-based Wasserstein dependence";
 
 - functions for measuring (penalized) Gaussian copula-based dependence between random vectors including Wasserstein dependence, mutual information and Hellinger distance
 

@@ -12,5 +12,5 @@ create_R0 = function(R,dim){
   }
   
   return(R0)
-    
+  
 }

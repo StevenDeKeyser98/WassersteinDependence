@@ -1,5 +1,5 @@
 # VecDep
-Measuring dependence between random vectors and applications
+Measuring dependence between random vectors and applications.
 
 R code implementations used for the article "High-dimensional copula-based Wasserstein dependence", including
 

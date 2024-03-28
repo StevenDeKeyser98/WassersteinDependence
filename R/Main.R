@@ -31,7 +31,6 @@ setwd(dir)
 
 ## Example 3 in paper
 
-rho1 = seq(-0.99,0.99,len = 100) # Sequence of rho1 values
 rho2 = seq(-0.99999,0.99999,len = 1000) # Sequence of rho2 values
 
 BWD1_binormal = function(rho1,rho2){

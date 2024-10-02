@@ -1,10 +1,11 @@
 # Simulation for covglasso on correlation matrix R using samples of sizes in vector n
 # and M Monte Carlo replications. Either use the adaptive lasso with rho values
-# or equal penalization to all off diagonal elements with omega values 
+# or equal penalization to all off diagonal elements with omega values.
+# Group lasso and sparse group lasso are also possible.
 # Best model gets selected by BIC 
-# Dim contains the dimensions of the random vectors
 
-Do_sim = function(R,dim,n,M,rho = NULL, omega = NULL, scad = FALSE, group = FALSE){
+
+Do_sim = function(R,dim,n,M,rho = NULL, omega = NULL, alpha = NULL, scad = FALSE, group = FALSE, Sparsegroup = FALSE){
   
   q = nrow(R)
   R_ests = list() # ML estimates 
@@ -14,73 +15,87 @@ Do_sim = function(R,dim,n,M,rho = NULL, omega = NULL, scad = FALSE, group = FALS
     P = matrix(1,q,q) # Penalize all off-diagonal entries
     diag(P) = 0 # Do not penalize diagonal elements
     array = array(0,dim = c(q,q,length(omega)))
-    
     for(o in 1:length(omega)){array[,,o] = omega[o] * P}
   } 
   
+  if(!is.null(alpha)){est_alpha = list()} 
   if(!is.null(rho)){est_rho = list()} # Selected rhos 
   
   for(i in 1:length(n)){
     R_ests[[paste("n =", toString(n[i]))]] = list()
-    
     if(!is.null(omega)){est_omega[[paste("n =", toString(n[i]))]] = integer(M)}
-    
     if(!is.null(rho)){est_rho[[paste("n =", toString(n[i]))]] = integer(M)}
   }
   
   R_ests_covglasso = R_ests # Covglasso estimates 
   
   set.seed(123)
-  
   for(i in 1:length(n)){
-    
     for(e in 1:M){
       print(paste("n = ",n[i]," : Monte Carlo sample",e,"out of",M))
       Gsample = rmvnorm(n[i],rep(0,q),R, method = "chol") # Multivariate Gaussian sample
       Usample = pnorm(Gsample) # Multivariate Gaussian copula sample, marginals can be changed
-      sample = qnorm(Usample) # We take standard normal marginals 
+      sample = qnorm(Usample) # We take standard normal marginals for now
       
-      scores = matrix(0,n[i],q) # Normal scores
-      
+      scores = matrix(0,n[i],q)
       for(j in 1:q){
         scores[,j] = qnorm((n[i]/(n[i]+1)) * ecdf(sample[,j])(sample[,j]))
       }
       
-      Sigma_est = cov(scores) * ((n[i]-1)/n[i]) # ML estimator for sigma
+      Sigma_est = cov(scores) * ((n[i]-1)/n[i])
       
       R_est = est_R(sample,1)
+    
+      # Five fold cross validation for selecting omega
+      # omega_est = CVomega(scores,5,omega,P, "covglasso") # Cross validation for selecting omega
+      # est_omega[[paste("n =", toString(n))]][e] = omega_est
+      
+      # In case cross validation was used for selecting omega
+      # array = array(omega_est * P, dim = c(q,q,1))
       
       # We now estimate the covariance matrix of the pseudo Gaussian sample using a Lasso penalty (package covglasso)
       
-      if(!is.null(omega) && scad == FALSE && group == FALSE){ # Lasso
+      if(!is.null(omega) && scad == FALSE && group == FALSE && Sparsegroup == FALSE){
         est_rho = NULL
+        est_alpha = NULL
         covglasso = covglasso(S = Sigma_est, n = n[i], lambda = array, start = Sigma_est)
         est_omega[[paste("n =", toString(n[i]))]][e] = omega[which.max(covglasso$BIC)]
       }
       
-      if(!is.null(rho)){ # Adaptive lasso
+      if(!is.null(rho)){
         est_omega = NULL
+        est_alpha = NULL
         covglasso = covglasso(S = Sigma_est, n = n[i],  rho = rho, start = Sigma_est)
         est_rho[[paste("n =", toString(n[i]))]][e] = rho[which.max(covglasso$BIC)]
       }
       
-      if(scad == TRUE){ # Scad 
+      if(scad == TRUE){
         est_rho = NULL
+        est_alpha = NULL
         covgpen = covgpenal(Sigma_est,n[i],omega,derpenal = function(t,omega){derSCAD(t,omega,3.7)})
         covglasso = covgpen[[1]]
         est_omega[[paste("n =", toString(n[i]))]][e] = covgpen[[2]]
       }
       
-      if(group == TRUE){ # Group lasso
+      if(group == TRUE){
         est_rho = NULL
+        est_alpha = NULL
         groupl = GroupLasso(Sigma_est, Sigma_est, n[i], omega, dim, step.size = 100)
         covglasso = groupl[[1]]
         est_omega[[paste("n =", toString(n[i]))]][e] = groupl[[2]]
       }
       
-      Sigma_est_covglasso = covglasso$sigma # Penalized sigma estimate
-      D = sqrt(solve(diag(diag(Sigma_est_covglasso)))) 
-      R_est_covglasso = D %*% Sigma_est_covglasso %*% D # Penalized R estimate
+      if(Sparsegroup == TRUE){
+        est_rho = NULL
+        groupl = SGroupLasso(Sigma_est, Sigma_est, n[i], omega, alpha, dim, step.size = 100)
+        covglasso = groupl[[1]]
+        est_omega[[paste("n =", toString(n[i]))]][e] = groupl[[2]]
+        est_alpha[[paste("n =", toString(n[i]))]][e] = groupl[[3]]
+      }
+      
+      Sigma_est_covglasso = covglasso$sigma
+      D = sqrt(solve(diag(diag(Sigma_est_covglasso))))
+      R_est_covglasso = D %*% Sigma_est_covglasso %*% D
       
       R_ests[[paste("n =", toString(n[i]))]][[e]] = R_est
       R_ests_covglasso[[paste("n =", toString(n[i]))]][[e]] = R_est_covglasso
@@ -88,7 +103,6 @@ Do_sim = function(R,dim,n,M,rho = NULL, omega = NULL, scad = FALSE, group = FALS
   }
   
   FerrorsR_est = list() # Frobenius errors ML estimates
-  
   for(i in 1:length(n)){
     FerrorsR_est[[paste("n =", toString(n[i]))]] = integer(M)
   }
@@ -107,7 +121,6 @@ Do_sim = function(R,dim,n,M,rho = NULL, omega = NULL, scad = FALSE, group = FALS
   
   
   for(i in 1:length(n)){
-    
     for(e in 1:M){
       R_est = R_ests[[paste("n =", toString(n[i]))]][[e]]
       R_est_covglasso = R_ests_covglasso[[paste("n =", toString(n[i]))]][[e]]
@@ -131,9 +144,10 @@ Do_sim = function(R,dim,n,M,rho = NULL, omega = NULL, scad = FALSE, group = FALS
   
   return(list("R_ests" = R_ests, "R_ests_covglasso" = R_ests_covglasso,
               "TPR" = TPR, "FPR" = FPR, "est_omega" = est_omega, "est_rho" = est_rho, 
+              "est_alpha" = est_alpha,
               "FerrorsR_est" = FerrorsR_est, "FerrorsR_est_covglasso" = FerrorsR_est_covglasso, 
               "MIests" = MIests, "Helests" = Helests, "BWD1ests" = BWD1ests, "BWD2ests" = BWD2ests,
               "MIests_covglasso" = MIests_covglasso, "Helests_covglasso" = Helests_covglasso,
               "BWD1ests_covglasso" = BWD1ests_covglasso, "BWD2ests_covglasso" = BWD2ests_covglasso))
-  
 }
+

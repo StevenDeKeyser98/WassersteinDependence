@@ -1448,7 +1448,7 @@ comb = combs(1:310,2)
 
 filter = function(data){
   
-  # Pairwise removal of variables that have normal scrores rank correlation
+  # Pairwise removal of variables that have normal scores rank correlation
   # larger than 0.8 in absolute value
   
   comb = combs(1:ncol(data),2)

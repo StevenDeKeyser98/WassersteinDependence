@@ -1488,18 +1488,14 @@ scores = qnorm(pseudos) # Normal scores
 
 pvalues = matrix(0,d,d)
 
-start_time = Sys.time() # Takes approximately 1200 minutes to run
-
 set.seed(123)
+
 for(i in 1:(d-1)){
   for(j in (i+1):d){
     print(paste("i = ", i, "and j = ", j))
     pvalues[i,j] = gofCopula(normalCopula(dim = 2),new_data[,c(i,j)])$p.value
   }
 }
-
-end_time = Sys.time()
-print(difftime(end_time, start_time, units='mins'))
 
 # save(pvalues,file = "Pvalues.Rdata") # Save data
 

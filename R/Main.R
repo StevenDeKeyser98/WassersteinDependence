@@ -29,8 +29,9 @@ library(gofCopula)
 dir = dirname(rstudioapi::getActiveDocumentContext()$path) 
 setwd(dir) 
 
-## Example 3 in paper
+## Example 3 
 
+rho1 = seq(-0.99,0.99,len = 100) # Sequence of rho1 values
 rho2 = seq(-0.99999,0.99999,len = 1000) # Sequence of rho2 values
 
 BWD1_binormal = function(rho1,rho2){
@@ -243,7 +244,6 @@ true_val = matrix(0,length(nvalues),length(svalues)) # True values
 est_val = array(0, dim = c(length(nvalues),length(svalues),M)) # Estimates
 
 set.seed(123)
-start_time = Sys.time() # Takes approximately 0.53 minutes to run 
 
 for(k in 1:length(nvalues)){
   n = nvalues[k]
@@ -269,9 +269,6 @@ for(k in 1:length(nvalues)){
     }
   }
 }
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
-
 
 # Make plots
 
@@ -307,7 +304,6 @@ g4 = ggplot() + geom_qq(aes(sample = est_val[4,1,])) +
 
 median(est_val[4,1,])
 
-
 # Simulation for AR(1) model with rho = 0.25 and k = 2, d1 = d2 = 2
 # with different marginals
 
@@ -319,7 +315,6 @@ true_val2 = matrix(0, length(nvalues),length(svalues))
 est_val2 = array(0, dim = c(length(nvalues),length(svalues),M))
 
 set.seed(123)
-start_time = Sys.time() # Takes approximately 1.32 minutes to run 
 
 for(k in 1:length(nvalues)){
   n = nvalues[k]
@@ -347,8 +342,6 @@ for(k in 1:length(nvalues)){
     }
   }
 }
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
 
 # Make plots
 
@@ -393,8 +386,8 @@ M = 1000
 
 true_val3 = matrix(0, length(nvalues),length(svalues))
 est_val3 = array(0, dim = c(length(nvalues),length(svalues),M))
+
 set.seed(123)
-start_time = Sys.time() # Takes approximately 0.57 minutes to run 
 
 for(k in 1:length(nvalues)){
   n = nvalues[k]
@@ -420,8 +413,6 @@ for(k in 1:length(nvalues)){
     }
   }
 }
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
 
 # Make plots
 
@@ -468,8 +459,8 @@ M = 1000
 
 true_val4 = integer(length(nvalues))
 est_val4 = matrix(0,length(nvalues),M)
+
 set.seed(123)
-start_time = Sys.time() # Takes approximately 2.19 minutes to run 
 
 for(k in 1:length(nvalues)){
   n = nvalues[k]
@@ -490,8 +481,6 @@ for(k in 1:length(nvalues)){
   }
   est_val4[k,] = est
 }
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
 
 # Make plots
 
@@ -531,7 +520,6 @@ median(est_val4[4,])
 
 ggarrange(g1,g2,g3,g4,g5,g6,g7,g8,g9,g10,g11,g12,g13,g14,g15,g16, nrow = 4, ncol = 4)
 
-
 # Empirical verification for asymptotic standard deviation of D1 (or D2)
 # in Example 3
 
@@ -547,7 +535,6 @@ n = 10000 # Sample size
 M = 1000  # Number of Monte Carlo Replications
 
 set.seed(123)
-start_time = Sys.time() # Takes approximately 1 minute to run when M = 10
 
 for(i in 1:length(rho2)){
 
@@ -606,8 +593,6 @@ for(i in 1:length(rho2)){
     values5[i] = sqrt(n) * sqrt(var(est))
   }
 }
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
 
 # Save variables
 
@@ -710,7 +695,6 @@ M = 1000 # Number of Monte Carlo replications
 true_val = array(0, dim = c(4,length(nvalues),length(svalues))) # True values
 est_val = array(0, dim = c(4,length(nvalues),length(svalues),M)) # Estimated values
 
-start_time = Sys.time() # Takes approximately 1.8 minutes to run when M = 10
 set.seed(123)
 
 for(k in 1:length(nvalues)){
@@ -737,9 +721,6 @@ for(k in 1:length(nvalues)){
     }
   }
 }
-
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
 
 # Compute Monte Carlo biases and standard deviations
 
@@ -782,7 +763,6 @@ M = 1000
 true_val = array(0, dim = c(4,length(nvalues),length(svalues)))
 est_val = array(0, dim = c(4,length(nvalues),length(svalues),M))
 
-start_time = Sys.time() # Takes approximately 1.5 minutes to run when M = 10
 set.seed(123)
 
 for(k in 1:length(nvalues)){
@@ -809,9 +789,6 @@ for(k in 1:length(nvalues)){
     }
   }
 }
-
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
 
 # Compute Monte Carlo biases and standard deviations
 
@@ -858,7 +835,6 @@ est_val = array(0, dim = c(4,length(nvalues),length(svalues),M))
 est_omegas = array(0, dim = c(length(nvalues),length(svalues),M)) # Chosen penalty parameters
 true_val = array(0, dim = c(4,length(nvalues),length(svalues)))
 
-start_time = Sys.time() # Takes approximately 11 minutes to run when M = 10
 set.seed(123)
 
 for(k in 1:length(nvalues)){
@@ -884,8 +860,6 @@ for(k in 1:length(nvalues)){
     est_val[3,k,i,] = est[3,] ; est_val[4,k,i,] = est[4,]
   }
 }
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
 
 # Compute Monte Carlo biases and standard deviations
 
@@ -930,8 +904,8 @@ est_val = array(0, dim = c(4,length(nvalues),length(svalues),M))
 est_omegas = array(0, dim = c(length(nvalues),length(svalues),M))
 true_val = array(0, dim = c(4,length(nvalues),length(svalues)))
 
-start_time = Sys.time() # Takes approximately 10 minutes to run when M = 10
 set.seed(123)
+
 for(k in 1:length(nvalues)){
   
   n = nvalues[k]
@@ -956,8 +930,6 @@ for(k in 1:length(nvalues)){
     est_val[3,k,i,] = est[3,] ; est_val[4,k,i,] = est[4,]
   }
 }
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
 
 # Compute Monte Carlo biases and standard deviations
 
@@ -1122,7 +1094,8 @@ ggplot(frame, aes(x=s, y=Omegas, color=n)) + geom_boxplot() +  xlab("q") + ylab(
 
 # VTS = list("Setting1" = list("Lasso" = 0, "ALasso" = 0, "Scad" = 0, "GLasso" = 0),
 #            "Setting2" = list("Lasso" = 0, "ALasso" = 0, "Scad" = 0, "GLasso" = 0),
-#            "Setting3" = list("Lasso" = 0, "ALasso" = 0, "Scad" = 0, "GLasso" = 0))
+#            "Setting3" = list("Lasso" = 0, "ALasso" = 0, "Scad" = 0, "GLasso" = 0),
+#            "Setting4" = list("Lasso" = 0, "ALasso" = 0, "Scad" = 0, "GLasso" = 0, "SGLasso" = 0))
 
 ## Scenario 1 (lower dimension, quite low sparsity, no entire blocks of zero)
 
@@ -1174,6 +1147,22 @@ M = 1000
 rho = seq(0.01, 0.6,length = 50)
 omega = seq(0.01, 0.6,length = 50)
 
+## Scenario 4 (lower dimension, high sparsity, group sparsity + sparsity within blocks)
+
+set.seed(123)
+R11 = gen_cor(5,0.2)
+R = adiag(R11, R11, R11, R11)
+q = 20
+dim = c(5,5,5,5)
+create_image(R == 0)
+length(which(R == 0)) / (q^2) # Sparseness density
+
+n = c(50,100,500)
+M = 1000
+rho = seq(0.01, 0.6, length = 50)
+omega = seq(0.01, 0.6, length = 50)
+alpha = seq(0.1,0.9, by = 0.1)
+
 # Simulation 
 
 # The function Do_sim performs the simulation;
@@ -1181,38 +1170,14 @@ omega = seq(0.01, 0.6,length = 50)
 # For scad, set omega = omega, scad = TRUE
 # For adaptive lasso, set rho = rho
 # For group lasso, set omega = omega, group = TRUE
-
-start_time = Sys.time() # When M = 10, it takes approximately
-
-# In scenario 1:
-
-# 0.1 minutes to run in case of lasso
-# 0.1 minutes to run in case of scad
-# 0.04 minutes to run in case of adaptive lasso
-# 70 minutes to run in case of group lasso
-
-# In scenario 2:
-
-# 0.1 minutes to run in case of lasso
-# 0.1 minutes to run in case of scad
-# 0.04 minutes to run in case of adaptive lasso
-# 34 minutes to run in case of group lasso
-
-# In scenario 3:
-
-#  23 minutes to run in case of lasso
-#  24 minutes to run in case of scad
-#  2.83 minutes to run in case of adaptive lasso
-#  594 minutes to run in case of group lasso
+# For sparse group lasso, set omega = omega, alpha = alpha, Sparsegroup = TRUE
 
 out = Do_sim(R,dim,n,M,omega = omega)
-end_time = Sys.time()
-difftime(end_time, start_time, units='mins')
 
 # VTS$Setting1$Lasso = out
-# save(VTS, file = "LassoSim.Rdata") # Save data
+# save(VTS, file = "LassoSimNew.Rdata") # Save data
 
-load("LassoSim.Rdata") # Load data
+load("LassoSimNew.Rdata") # Load data
 out = VTS$Setting1$Lasso
 
 # Average TPR and FPR
@@ -1677,3 +1642,269 @@ R_est_covglasso = D %*% Sigma_est_covglasso %*% D
 create_image(R_est_covglasso == 0)
 BWD1(R_est_covglasso,dim)
 corrplot(R_est_covglasso, method = 'color',tl.pos='n')
+
+# Code for Supplementary Material
+
+# Scenario 2 with cross-validation
+
+# VTS = list("Setting2CV" = list("Lasso" = 0, "ALasso" = 0, "Scad" = 0))
+
+out = Do_simCV(R,dim,n,M,omega = omega)
+
+VTS$Setting2CV$Lasso = out
+# save(VTS, file = "LassoSimSetting2CV.Rdata") # Save data
+
+load("LassoSimSetting2CV.Rdata") # Load data
+out = VTS$Setting2CV$Lasso
+
+create_image(out$R_ests_covglasso$`n = 50`[[2]] == 0)
+
+# Average TPR and FPR
+
+# TPR
+for(i in 1:length(n)){
+  print(paste("TPR for n =", n[i], ":", mean(out$TPR[[paste("n =", toString(n[i]))]])))
+}
+
+# FPR
+for(i in 1:length(n)){
+  print(paste("FPR for n =" ,n[i] , ":", mean(out$FPR[[paste("n =", toString(n[i]))]])))
+}
+
+# Chosen rhos (or omegas)
+
+# In case rhos
+for(i in 1:length(n)){
+  print(paste("Rhos for n =",n[i], ":"))
+  print(out$est_rho[[paste("n =", toString(n[i]))]])
+  print(paste("Mean = ", mean(out$est_rho[[paste("n =", toString(n[i]))]])))
+}
+
+# In case omegas
+for(i in 1:length(n)){
+  print(paste("Omegas for n =",n[i], ":"))
+  print(out$est_omega[[paste("n =", toString(n[i]))]])
+  print(paste("Mean = ", mean(out$est_omega[[paste("n =", toString(n[i]))]])))
+}
+
+# Comparing penalized estimator to ML estimator
+
+# Monte Carlo mean and variance of Frobenius error
+
+# Mean
+for(i in 1:length(n)){
+  print(paste("Means for n = ", n[i], ":"))
+  print(paste("MLE :",mean(out$FerrorsR_est[[paste("n =", toString(n[i]))]])))
+  print(paste("covglasso :",mean(out$FerrorsR_est_covglasso[[paste("n =", toString(n[i]))]])))
+}
+
+# Variance 
+for(i in 1:length(n)){
+  print(paste("Variances for n = ", n[i], ":"))
+  print(paste("MLE :",var(out$FerrorsR_est[[paste("n =", toString(n[i]))]])))
+  print(paste("covglasso :",var(out$FerrorsR_est_covglasso[[paste("n =", toString(n[i]))]])))
+}
+
+# RMSE (sqrt(Mean^2 + Var))
+for(i in 1:length(n)){
+  print(paste("RMSE for n = ", n[i], ":"))
+  print(paste("MLE :", sqrt(mean(out$FerrorsR_est[[paste("n =", toString(n[i]))]])^2 + var(out$FerrorsR_est[[paste("n =", toString(n[i]))]]))))
+  print(paste("covglasso :",sqrt(mean(out$FerrorsR_est_covglasso[[paste("n =", toString(n[i]))]])^2 + var(out$FerrorsR_est_covglasso[[paste("n =", toString(n[i]))]]))))
+}
+
+# Monte Carlo bias and variance of estimated dependence coefficients
+
+# Mutual information
+
+# Bias
+for(i in 1:length(n)){
+  print(paste("Biases for n = ", n[i], ":"))
+  print(paste("MLE :",mean(normalize(out$MIests[[paste("n =", toString(n[i]))]])) - normalize(MI_normal(R,dim))))
+  print(paste("covglasso :",mean(normalize(out$MIests_covglasso[[paste("n =", toString(n[i]))]])) - normalize(MI_normal(R,dim))))
+}
+
+# Variance
+for(i in 1:length(n)){
+  print(paste("Variances for n = ", n[i], ":"))
+  print(paste("MLE :",var(normalize(out$MIests[[paste("n =", toString(n[i]))]]))))
+  print(paste("covglasso :",var(normalize(out$MIests_covglasso[[paste("n =", toString(n[i]))]]))))
+}
+
+normalize = function(x){sqrt(1-exp(-2*x))} # Normalization for mutual information
+
+
+# RMSE 
+for(i in 1:length(n)){
+  print(paste("RMSEs for n = ", n[i], ":"))
+  print(paste("MLE :", sqrt((mean(normalize(out$MIests[[paste("n =", toString(n[i]))]])) - normalize(MI_normal(R,dim)))^2 + var(normalize(out$MIests[[paste("n =", toString(n[i]))]])))))
+  print(paste("covglasso :",sqrt((mean(normalize(out$MIests_covglasso[[paste("n =", toString(n[i]))]])) - normalize(MI_normal(R,dim)))^2 + var(normalize(out$MIests_covglasso[[paste("n =", toString(n[i]))]])))))
+}
+
+# Hellinger distance
+
+# Bias
+for(i in 1:length(n)){
+  print(paste("Biases for n = ", n[i], ":"))
+  print(paste("MLE :",mean(out$Helests[[paste("n =", toString(n[i]))]]) - Hel_normal(R,dim)))
+  print(paste("covglasso :",mean(out$Helests_covglasso[[paste("n =", toString(n[i]))]]) - Hel_normal(R,dim)))
+}
+
+# Variance
+for(i in 1:length(n)){
+  print(paste("Variances for n = ", n[i], ":"))
+  print(paste("MLE :",var(out$Helests[[paste("n =", toString(n[i]))]])))
+  print(paste("covglasso :",var(out$Helests_covglasso[[paste("n =", toString(n[i]))]])))
+}
+
+# RMSE 
+for(i in 1:length(n)){
+  print(paste("RMSEs for n = ", n[i], ":"))
+  print(paste("MLE :", sqrt((mean(out$Helests[[paste("n =", toString(n[i]))]]) - Hel_normal(R,dim))^2 + var(out$Helests[[paste("n =", toString(n[i]))]]))))
+  print(paste("covglasso :",sqrt((mean(out$Helests_covglasso[[paste("n =", toString(n[i]))]]) - Hel_normal(R,dim))^2 + var(out$Helests_covglasso[[paste("n =", toString(n[i]))]]))))
+}
+
+# BWD1
+
+# Bias
+for(i in 1:length(n)){
+  print(paste("Biases for n = ", n[i], ":"))
+  print(paste("MLE :",mean(out$BWD1ests[[paste("n =", toString(n[i]))]]) - BWD1(R,dim)))
+  print(paste("covglasso :",mean(out$BWD1ests_covglasso[[paste("n =", toString(n[i]))]]) - BWD1(R,dim)))
+}
+
+# Variance
+for(i in 1:length(n)){
+  print(paste("Variances for n = ", n[i], ":"))
+  print(paste("MLE :",var(out$BWD1ests[[paste("n =", toString(n[i]))]])))
+  print(paste("covglasso :",var(out$BWD1ests_covglasso[[paste("n =", toString(n[i]))]])))
+}
+
+# RMSE 
+for(i in 1:length(n)){
+  print(paste("RMSEs for n = ", n[i], ":"))
+  print(paste("MLE :", sqrt((mean(out$BWD1ests[[paste("n =", toString(n[i]))]]) - BWD1(R,dim))^2 + var(out$BWD1ests[[paste("n =", toString(n[i]))]]))))
+  print(paste("covglasso :",sqrt((mean(out$BWD1ests_covglasso[[paste("n =", toString(n[i]))]]) - BWD1(R,dim))^2 + var(out$BWD1ests_covglasso[[paste("n =", toString(n[i]))]]))))
+}
+
+# BWD2
+
+# Bias
+for(i in 1:length(n)){
+  print(paste("Biases for n = ", n[i], ":"))
+  print(paste("MLE :",mean(out$BWD2ests[[paste("n =", toString(n[i]))]]) - BWD2(R,dim)))
+  print(paste("covglasso :",mean(out$BWD2ests_covglasso[[paste("n =", toString(n[i]))]]) - BWD2(R,dim)))
+}
+
+# Variance
+for(i in 1:length(n)){
+  print(paste("Variances for n = ", n[i], ":"))
+  print(paste("MLE :",var(out$BWD2ests[[paste("n =", toString(n[i]))]])))
+  print(paste("covglasso :",var(out$BWD2ests_covglasso[[paste("n =", toString(n[i]))]])))
+}
+
+# RMSE
+for(i in 1:length(n)){
+  print(paste("RMSEs for n = ", n[i], ":"))
+  print(paste("MLE :", sqrt((mean(out$BWD2ests[[paste("n =", toString(n[i]))]]) - BWD2(R,dim))^2 + var(out$BWD2ests[[paste("n =", toString(n[i]))]]))))
+  print(paste("covglasso :",sqrt((mean(out$BWD2ests_covglasso[[paste("n =", toString(n[i]))]]) - BWD2(R,dim))^2 + var(out$BWD2ests_covglasso[[paste("n =", toString(n[i]))]]))))
+}
+
+# Misspecification
+
+q = 10
+dim = c(2,4,4)
+R = 0.5^(abs(matrix(1:q-1, nrow = q, ncol = q, byrow = TRUE) - (1:q-1)))
+true = BWD1(R,dim)
+Avar_true = BWD1_Avar(R,dim)^2
+
+M = 1000
+n = c(50,200,1000,5000,100000)
+nu = 5
+Q = function(t){qlst(t,nu,0,sqrt((nu-2)/nu))}
+
+# VTS = list("True" = 0,"nu50Miss" = 0,"nu5Miss" = 0)
+
+estimates = matrix(0,M,length(n))
+
+set.seed(123)
+for(i in 1:length(n)){
+  for(j in 1:M){
+    print(paste("i = ", i, "j = ", j))
+    sample = mvtnorm::rmvt(n = n[i], sigma = ((nu-2)/nu) * R, df = nu)
+    scores = matrix(0,n[i],q)
+    for(l in 1:q){
+      scores[,l] = qnorm((n[i]/(n[i]+1)) * ecdf(sample[,l])(sample[,l]))
+    }
+    R_est = cor(scores)
+    estimates[j,i] = BWD1(R_est,dim)
+  }
+}
+
+VTS$nu5Miss = estimates
+
+# save(VTS, file = "Misspecification.Rdata")
+load("Misspecification.Rdata")
+
+frame = data.frame(matrix(nrow = 15000, ncol = 3))
+colnames(frame) = c("est_dep","n","group")
+frame$est_dep[1:1000] = VTS$True[,1]
+frame$n[1:1000] = rep(50,1000)
+frame$est_dep[1001:2000] = VTS$True[,2]
+frame$n[1001:2000] = rep(200,1000)
+frame$est_dep[2001:3000] = VTS$True[,3]
+frame$n[2001:3000] = rep(1000,1000)
+frame$est_dep[3001:4000] = VTS$True[,4]
+frame$n[3001:4000] = rep(5000,1000)
+frame$est_dep[4001:5000] = VTS$True[,5]
+frame$n[4001:5000] = rep(100000,1000)
+
+frame$est_dep[5001:6000] = VTS$nu50Miss[,1]
+frame$n[5001:6000] = rep(50,1000)
+frame$est_dep[6001:7000] = VTS$nu50Miss[,2]
+frame$n[6001:7000] = rep(200,1000)
+frame$est_dep[7001:8000] = VTS$nu50Miss[,3]
+frame$n[7001:8000] = rep(1000,1000)
+frame$est_dep[8001:9000] = VTS$nu50Miss[,4]
+frame$n[8001:9000] = rep(5000,1000)
+frame$est_dep[9001:10000] = VTS$nu50Miss[,5]
+frame$n[9001:10000] = rep(100000,1000)
+
+frame$est_dep[10001:11000] = VTS$nu5Miss[,1]
+frame$n[10001:11000] = rep(50,1000)
+frame$est_dep[11001:12000] = VTS$nu5Miss[,2]
+frame$n[11001:12000] = rep(200,1000)
+frame$est_dep[12001:13000] = VTS$nu5Miss[,3]
+frame$n[12001:13000] = rep(1000,1000)
+frame$est_dep[13001:14000] = VTS$nu5Miss[,4]
+frame$n[13001:14000] = rep(5000,1000)
+frame$est_dep[14001:15000] = VTS$nu5Miss[,5]
+frame$n[14001:15000] = rep(100000,1000)
+
+
+frame$group[1:5000] = rep(1,5000)
+frame$group[5001:10000] = rep(2,5000)
+frame$group[10001:15000] = rep(3,5000)
+frame$n = as.factor(frame$n)
+frame$group = as.factor(frame$group)
+
+
+ggplot(frame, aes(x=n, y=est_dep, fill = group)) + scale_y_continuous(labels = label_number(accuracy = 0.01),limits = c(0,0.16)) +
+  geom_boxplot(width=0.5) +
+  labs(title="", y = expression(hat(D)[1])) + theme_bw() + 
+  theme(plot.title = element_text(hjust=0.5, size = 14),axis.title = element_text(size=13)) +
+  scale_fill_manual(name = "Student-t copula", values = c("white", "azure2","azure3","azure4"),labels = c(expression("  " * nu * " = " * infinity * "   "),expression(nu * " = 50" * "  "), expression(nu * " = 5" * "   "))) +
+  guides(colour = guide_legend(title.position = "top", keywidth = unit(1, "cm"), keyheight = unit(1, "cm"),
+                               override.aes = list(shape = 22,size = 10))) +
+  theme(legend.position = c(0.8, 0.8),legend.text = element_text(size = 11)) +
+  scale_x_discrete(labels=c("50","200","1000","5000","100 000")) + geom_hline(yintercept = 0.04015, col = "red")
+
+
+sqrt(n) * (apply(VTS$True,2,mean) - true)
+sqrt(n) * (apply(VTS$nu50Miss,2,mean) - true)
+sqrt(n) * (apply(VTS$nu5Miss,2,mean) - true)
+n * apply(VTS$True,2,var)
+n * apply(VTS$nu50Miss,2,var)
+n * apply(VTS$nu5Miss,2,var)
+
+
+

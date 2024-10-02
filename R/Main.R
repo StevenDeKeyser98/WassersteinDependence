@@ -1518,7 +1518,7 @@ ggplot(frame, aes(y = pvalues, x = NA, col = "a")) + geom_boxplot(fill='#A4A4A4'
 
 omegas = seq(0.01,0.999,len = 50)
 
-set.seed(123) # Do the clustering; takes approximately 14 minutes to run
+set.seed(123) # Do the clustering
 Iclust = Icluster(data = new_data, est_method = list("OT", coef = 1, "omegas" = omegas))
 
 # VTS$Iclust = Iclust 

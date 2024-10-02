@@ -1465,10 +1465,7 @@ filter = function(data){
 colnames(data) = NULL
 corrplot(est_R(data,1), method = 'color',tl.pos='n')
 
-start_time = Sys.time() # Takes approximately 10 minutes to run
 new_data = filter(data) # Remove detrimental correlations (91 variables remain)
-end_time = Sys.time()
-print(difftime(end_time, start_time, units='mins'))
 
 # VTS = list()
 

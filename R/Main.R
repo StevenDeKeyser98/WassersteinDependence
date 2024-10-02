@@ -1640,6 +1640,20 @@ corrplot(R_est_covglasso, method = 'color',tl.pos='n')
 
 # Scenario 2 with cross-validation
 
+q = 20 # Must equal m*p + k
+m = 3
+p = 6 # Construct p^2 blocks of size m^2 
+k = 2 # Add a p+1'th block of dimension k that has no zeroes 
+
+set.seed(123)
+R = sim_cor(m,p,k) # True sparse correlation matrix
+dim = c(rep(m,p),k) # Dimensions of the random vectors
+
+n = c(50,100,500) 
+M = 1000
+rho = seq(0.01, 0.6, length = 50)
+omega = seq(0.01, 0.6, length = 50)
+
 # VTS = list("Setting2CV" = list("Lasso" = 0, "ALasso" = 0, "Scad" = 0))
 
 out = Do_simCV(R,dim,n,M,omega = omega)

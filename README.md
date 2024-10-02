@@ -9,4 +9,6 @@ R code implementations used for the article "High-dimensional copula-based Wasse
 
 - functions for clustering a set of continuous features using dependence measures between random vectors
 
--  RMarkdown file (RMarkdown.pdf).
+-  RMarkdown file (RMarkdown.pdf)
+  
+-  LSVT voice rehabilitation dataset (Voice.xlsx).
